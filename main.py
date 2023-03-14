@@ -10,19 +10,18 @@ def get_masks(degree):
     text_mask %= 256
 
     # some bite = 1010 1101
-    # img_mask = 11111100 обнулить последние 2 бита
-    img_mask <<= degree
-    img_mask %= 256
+    # img_mask = 11111100 для стирания последних 2 битов, а для записи потом нужных нам бит прибавляем например 00000010, тогда получим 1010 1110
+    img_mask <<= degree # сдвиг влево
+    img_mask %= 256 # чтобы не сохранялись биты, которые были сдвинуты
     return text_mask, img_mask
 
 
 def encode(text_file, img_file):
-    degree = 2
+    degree = 2  # степень шифровки (скольки бит от исходного файла мы будем шифровать) , чем больше тем хуже пиксели (1\2\4\8)
     text_len = os.stat(text_file).st_size
     img_len = os.stat(img_file).st_size
 
     text_mask, img_mask = get_masks(degree)
-
 
     if text_len >= img_len * degree / 8 - 54:
         print('Too long text1')
@@ -30,7 +29,7 @@ def encode(text_file, img_file):
 
     with open(img_file, 'rb') as file1, open('encoded.bmp', 'wb') as file2, open(text_file,
                                                                                  'r') as file3:
-        header = file1.read(54)
+        header = file1.read(54) # первые 54 байта просто копируем в новую картинку для сохранения конфигурации
         file2.write(header)
 
         while True:
@@ -55,10 +54,10 @@ def encode(text_file, img_file):
 
 def decode(img_file):
     degree = 2
-    count_read = int(input('How many symbols to read: \n'))
+    count_read = int(input('Количество символов для чтения: \n'))
     img_len = os.stat(img_file).st_size
 
-    if count_read >= img_len * degree / 8 - 54:
+    if count_read >= img_len * degree / 8 - 54:  #максимальный размер текста для записи
         print('Too long text1')
         return
 
