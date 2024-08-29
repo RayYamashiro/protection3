@@ -57,7 +57,7 @@ def decode(img_file):
     count_read = int(input('Количество символов для чтения: \n'))
     img_len = os.stat(img_file).st_size
 
-    if count_read >= img_len * degree / 8 - 54:  #максимальный размер текста для записи
+    if count_read >= img_len * degree / 8 - 54:  #максимальный размер текста для записей
         print('Too long text1')
         return
 
